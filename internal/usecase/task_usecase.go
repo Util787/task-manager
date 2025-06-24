@@ -22,6 +22,8 @@ func NewTaskUsecase(taskRepo TaskRepository) *TaskUsecase {
 	return &TaskUsecase{taskRepo: taskRepo}
 }
 
+//TODO: add validation and logic
+
 func (t *TaskUsecase) CreateTask(task *domain.Task) error {
 	t.taskRepo.CreateTask(task)
 	return nil
