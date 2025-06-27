@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -46,6 +47,10 @@ func (h *Handlers) createTask(c *gin.Context) {
 		Description: req.Description,
 	})
 	if err != nil {
+		if errors.Is(err, domain.ErrTitleEmpty) || errors.Is(err, domain.ErrTitleTooLong) || errors.Is(err, domain.ErrDescriptionTooLong) {
+			newErrorResponse(c, log, http.StatusBadRequest, "invalid request body: "+err.Error(), err)
+			return
+		}
 		newErrorResponse(c, log, http.StatusInternalServerError, "failed to create task", err)
 		return
 	}
