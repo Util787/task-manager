@@ -34,7 +34,7 @@ func (t *TaskUsecase) CreateTask(task *domain.Task) (uuid.UUID, error) {
 	// Initializing task state, in fact the logic would be much more complicated, but I made like this for simplicity
 	task.TaskState = domain.TaskState{
 		Status:       domain.StatusInProgress,
-		WorkDuration: 0, 
+		WorkDuration: 0,
 	}
 
 	id := t.taskRepo.CreateTask(task)
@@ -43,13 +43,13 @@ func (t *TaskUsecase) CreateTask(task *domain.Task) (uuid.UUID, error) {
 
 func (t *TaskUsecase) validateTask(task *domain.Task) error {
 	if task.Title == "" {
-		return fmt.Errorf("title cannot be empty")
+		return domain.ErrTitleEmpty
 	}
 	if utf8.RuneCountInString(task.Title) > 255 {
-		return fmt.Errorf("title too long, maximum 255 characters")
+		return fmt.Errorf("%w, maximum 255 characters", domain.ErrTitleTooLong)
 	}
 	if utf8.RuneCountInString(task.Description) > 1000 {
-		return fmt.Errorf("description too long, maximum 1000 characters")
+		return fmt.Errorf("%w, maximum 1000 characters", domain.ErrDescriptionTooLong)
 	}
 	return nil
 }

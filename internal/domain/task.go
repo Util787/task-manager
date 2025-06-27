@@ -32,4 +32,7 @@ type TaskState struct {
 
 var (
 	ErrTaskNotFound = errors.New("task not found")
+	ErrTitleEmpty   = errors.New("title is empty")
+	ErrTitleTooLong = errors.New("title is too long")
+	ErrDescriptionTooLong = errors.New("description is too long")
 )
