@@ -16,14 +16,18 @@ const (
 )
 
 type Task struct {
-	ID          uuid.UUID  `json:"id"`
-	Title       string     `json:"title"`
-	Description string     `json:"description"`
-	Status      TaskStatus `json:"status"`
-	Result      string     `json:"result"`
+	ID          uuid.UUID `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	TaskState   TaskState `json:"task_state"`
+	Result      string    `json:"result"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type TaskState struct {
+	Status       TaskStatus    `json:"status"`
 	WorkDuration time.Duration `json:"work_duration"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 var (
