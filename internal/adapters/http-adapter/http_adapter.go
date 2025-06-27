@@ -17,7 +17,7 @@ type HttpAdapter struct {
 func New(cfg config.Config, logger *slog.Logger, svc *usecase.TaskUsecase) *HttpAdapter {
 	handler := handlers.New(logger, svc)
 	router := handler.InitRoutes(cfg.Env)
-	s := http_server.New(cfg.HttpServer, router)
+	s := http_server.New(cfg.HttpServerCfg, router)
 
 	return &HttpAdapter{
 		server: s,

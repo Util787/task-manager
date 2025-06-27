@@ -11,7 +11,7 @@ import (
 
 type Config struct {
 	Env        string `env:"ENV" envDefault:"prod"`
-	HttpServer http_server.Config
+	HttpServerCfg http_server.Config
 }
 
 func Load() (*Config, error) {
@@ -31,10 +31,10 @@ func Load() (*Config, error) {
 
 	slog.Info("Configuration loaded successfully", // for debug, delete later
 		"env", cfg.Env,
-		"http_port", cfg.HttpServer.Port,
-		"http_read_header_timeout", cfg.HttpServer.ReadHeaderTimeout,
-		"http_write_timeout", cfg.HttpServer.WriteTimeout,
-		"http_read_timeout", cfg.HttpServer.ReadTimeout,
+		"http_port", cfg.HttpServerCfg.Port,
+		"http_read_header_timeout", cfg.HttpServerCfg.ReadHeaderTimeout,
+		"http_write_timeout", cfg.HttpServerCfg.WriteTimeout,
+		"http_read_timeout", cfg.HttpServerCfg.ReadTimeout,
 	)
 
 	return cfg, nil
