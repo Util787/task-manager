@@ -14,6 +14,21 @@ type createTaskRequest struct {
 	Description string `json:"description"`
 }
 
+type createTaskResponse struct {
+	Message string `json:"message" example:"task created successfully with id 6bcd175e-cba9-4ba6-b6ef-f3ac37864118"`
+}
+
+// CreateTask godoc
+// @Summary Create a new task
+// @Description Creates a new task with the specified title and description
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param task body createTaskRequest true "Task title and description"
+// @Success 201 {object} createTaskResponse "task created successfully with id {task_id}"
+// @Failure 400 {object} errorResponse "invalid request body"
+// @Failure 500 {object} errorResponse "failed to create task"
+// @Router /tasks [post]
 func (h *Handlers) createTask(c *gin.Context) {
 	op, _ := c.Get("op")
 	log := h.log.With(
@@ -35,5 +50,7 @@ func (h *Handlers) createTask(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": fmt.Sprintf("task created successfully with id %s", taskID)})
+	c.JSON(http.StatusCreated, createTaskResponse{
+		Message: fmt.Sprintf("task created successfully with id %s", taskID),
+	})
 }

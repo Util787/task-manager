@@ -1,0 +1,327 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for task management",
+        "title": "Task Manager API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/tasks": {
+            "post": {
+                "description": "Creates a new task with the specified title and description",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Create a new task",
+                "parameters": [
+                    {
+                        "description": "Task title and description",
+                        "name": "task",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.createTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "task created successfully with id {task_id}",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.createTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "failed to create task",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "delete": {
+                "description": "Deletes a task with the specified ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Delete task by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "task deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.deleteTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid task ID",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "task not found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "failed to delete task",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}/result": {
+            "get": {
+                "description": "Returns the result of task execution",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Get task result by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "task result: {task_result}",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.getTaskResultResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid task ID",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "task not found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "failed to get task result",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks/{id}/state": {
+            "get": {
+                "description": "Returns the current state (status, work duration in nanoseconds) of the task and its creation time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Get task state by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "task state: {state}, created at: {created_at}",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.GetTaskStateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid task ID",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "task not found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "failed to get task state",
+                        "schema": {
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.errorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_Util787_task-manager_internal_domain.TaskState": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/github_com_Util787_task-manager_internal_domain.TaskStatus"
+                },
+                "work_duration": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/time.Duration"
+                        }
+                    ],
+                    "example": 10
+                }
+            }
+        },
+        "github_com_Util787_task-manager_internal_domain.TaskStatus": {
+            "type": "string",
+            "enum": [
+                "failed",
+                "in_progress",
+                "completed"
+            ],
+            "x-enum-varnames": [
+                "StatusFailed",
+                "StatusInProgress",
+                "StatusCompleted"
+            ]
+        },
+        "internal_adapters_http-adapter_handlers.GetTaskStateResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-06-28T01:31:19.1864825+03:00"
+                },
+                "state": {
+                    "$ref": "#/definitions/github_com_Util787_task-manager_internal_domain.TaskState"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.createTaskRequest": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.createTaskResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "task created successfully with id 6bcd175e-cba9-4ba6-b6ef-f3ac37864118"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.deleteTaskResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "task deleted successfully"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.errorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.getTaskResultResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "task result: completed"
+                }
+            }
+        },
+        "time.Duration": {
+            "type": "integer",
+            "enum": [
+                -9223372036854775808,
+                9223372036854775807,
+                1,
+                1000,
+                1000000,
+                1000000000,
+                60000000000,
+                3600000000000
+            ],
+            "x-enum-varnames": [
+                "minDuration",
+                "maxDuration",
+                "Nanosecond",
+                "Microsecond",
+                "Millisecond",
+                "Second",
+                "Minute",
+                "Hour"
+            ]
+        }
+    }
+}

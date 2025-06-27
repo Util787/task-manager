@@ -27,7 +27,7 @@ type Task struct {
 
 type TaskState struct {
 	Status       TaskStatus    `json:"status"`
-	WorkDuration time.Duration `json:"work_duration"`
+	WorkDuration time.Duration `json:"work_duration" example:"10"`
 }
 
 var (

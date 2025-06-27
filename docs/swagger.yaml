@@ -1,0 +1,222 @@
+basePath: /api/v1
+definitions:
+  github_com_Util787_task-manager_internal_domain.TaskState:
+    properties:
+      status:
+        $ref: '#/definitions/github_com_Util787_task-manager_internal_domain.TaskStatus'
+      work_duration:
+        allOf:
+        - $ref: '#/definitions/time.Duration'
+        example: 10
+    type: object
+  github_com_Util787_task-manager_internal_domain.TaskStatus:
+    enum:
+    - failed
+    - in_progress
+    - completed
+    type: string
+    x-enum-varnames:
+    - StatusFailed
+    - StatusInProgress
+    - StatusCompleted
+  internal_adapters_http-adapter_handlers.GetTaskStateResponse:
+    properties:
+      created_at:
+        example: "2025-06-28T01:31:19.1864825+03:00"
+        type: string
+      state:
+        $ref: '#/definitions/github_com_Util787_task-manager_internal_domain.TaskState'
+    type: object
+  internal_adapters_http-adapter_handlers.createTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    required:
+    - title
+    type: object
+  internal_adapters_http-adapter_handlers.createTaskResponse:
+    properties:
+      message:
+        example: task created successfully with id 6bcd175e-cba9-4ba6-b6ef-f3ac37864118
+        type: string
+    type: object
+  internal_adapters_http-adapter_handlers.deleteTaskResponse:
+    properties:
+      message:
+        example: task deleted successfully
+        type: string
+    type: object
+  internal_adapters_http-adapter_handlers.errorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  internal_adapters_http-adapter_handlers.getTaskResultResponse:
+    properties:
+      message:
+        example: 'task result: completed'
+        type: string
+    type: object
+  time.Duration:
+    enum:
+    - -9223372036854775808
+    - 9223372036854775807
+    - 1
+    - 1000
+    - 1000000
+    - 1000000000
+    - 60000000000
+    - 3600000000000
+    type: integer
+    x-enum-varnames:
+    - minDuration
+    - maxDuration
+    - Nanosecond
+    - Microsecond
+    - Millisecond
+    - Second
+    - Minute
+    - Hour
+host: localhost:8080
+info:
+  contact: {}
+  description: API for task management
+  title: Task Manager API
+  version: "1.0"
+paths:
+  /tasks:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new task with the specified title and description
+      parameters:
+      - description: Task title and description
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/internal_adapters_http-adapter_handlers.createTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: task created successfully with id {task_id}
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.createTaskResponse'
+        "400":
+          description: invalid request body
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "500":
+          description: failed to create task
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+      summary: Create a new task
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a task with the specified ID
+      parameters:
+      - description: Task ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: task deleted successfully
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.deleteTaskResponse'
+        "400":
+          description: invalid task ID
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "500":
+          description: failed to delete task
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+      summary: Delete task by ID
+      tags:
+      - tasks
+  /tasks/{id}/result:
+    get:
+      consumes:
+      - application/json
+      description: Returns the result of task execution
+      parameters:
+      - description: Task ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'task result: {task_result}'
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.getTaskResultResponse'
+        "400":
+          description: invalid task ID
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "500":
+          description: failed to get task result
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+      summary: Get task result by ID
+      tags:
+      - tasks
+  /tasks/{id}/state:
+    get:
+      consumes:
+      - application/json
+      description: Returns the current state (status, work duration in nanoseconds)
+        of the task and its creation time
+      parameters:
+      - description: Task ID
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'task state: {state}, created at: {created_at}'
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.GetTaskStateResponse'
+        "400":
+          description: invalid task ID
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "404":
+          description: task not found
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+        "500":
+          description: failed to get task state
+          schema:
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.errorResponse'
+      summary: Get task state by ID
+      tags:
+      - tasks
+swagger: "2.0"

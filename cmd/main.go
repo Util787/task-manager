@@ -21,13 +21,11 @@ const (
 
 // @title           Task Manager API
 // @version         1.0
-// @description     Task Manager API
+// @description     API for task management
 
 // @host      localhost:8080
-// @BasePath  /api
-
+// @BasePath  /api/v1
 func main() {
-
 	config, err := config.Load()
 	if err != nil {
 		panic("Failed to load config" + err.Error())

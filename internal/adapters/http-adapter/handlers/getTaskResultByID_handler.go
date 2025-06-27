@@ -11,6 +11,22 @@ import (
 	"github.com/google/uuid"
 )
 
+type getTaskResultResponse struct {
+	Message string `json:"message" example:"task result: completed"`
+}
+
+// GetTaskResultByID godoc
+// @Summary Get task result by ID
+// @Description Returns the result of task execution
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path string true "Task ID" format(uuid)
+// @Success 200 {object} getTaskResultResponse "task result: {task_result}"
+// @Failure 400 {object} errorResponse "invalid task ID"
+// @Failure 404 {object} errorResponse "task not found"
+// @Failure 500 {object} errorResponse "failed to get task result"
+// @Router /tasks/{id}/result [get]
 func (h *Handlers) getTaskResultByID(c *gin.Context) {
 	op, _ := c.Get("op")
 	log := h.log.With(
@@ -35,5 +51,7 @@ func (h *Handlers) getTaskResultByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("task result: %s", result)})
+	c.JSON(http.StatusOK, getTaskResultResponse{
+		Message: fmt.Sprintf("task result: %s", result),
+	})
 }

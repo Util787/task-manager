@@ -10,6 +10,22 @@ import (
 	"github.com/google/uuid"
 )
 
+type deleteTaskResponse struct {
+	Message string `json:"message" example:"task deleted successfully"`
+}
+
+// DeleteTask godoc
+// @Summary Delete task by ID
+// @Description Deletes a task with the specified ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path string true "Task ID" format(uuid)
+// @Success 200 {object} deleteTaskResponse "task deleted successfully"
+// @Failure 400 {object} errorResponse "invalid task ID"
+// @Failure 404 {object} errorResponse "task not found"
+// @Failure 500 {object} errorResponse "failed to delete task"
+// @Router /tasks/{id} [delete]
 func (h *Handlers) deleteTask(c *gin.Context) {
 	op, _ := c.Get("op")
 	log := h.log.With(
@@ -34,5 +50,7 @@ func (h *Handlers) deleteTask(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "task deleted successfully"})
+	c.JSON(http.StatusOK, deleteTaskResponse{
+		Message: "task deleted successfully",
+	})
 }
