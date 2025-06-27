@@ -11,14 +11,12 @@ import (
 )
 
 type TaskRepository struct {
-	log   *slog.Logger
 	tasks map[uuid.UUID]*domain.Task
 	mu    sync.RWMutex // in context of this task its better to use rwmutex than sync.map/mutex
 }
 
 func NewTaskRepository(log *slog.Logger) *TaskRepository {
 	return &TaskRepository{
-		log:   log,
 		tasks: make(map[uuid.UUID]*domain.Task),
 	}
 }
