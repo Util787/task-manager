@@ -3,6 +3,7 @@ package usecase
 import (
 	"fmt"
 	"time"
+	"unicode/utf8"
 
 	"github.com/Util787/task-manager/internal/domain"
 	"github.com/google/uuid"
@@ -38,10 +39,10 @@ func (t *TaskUsecase) validateTask(task *domain.Task) error {
 	if task.Title == "" {
 		return fmt.Errorf("title cannot be empty")
 	}
-	if len(task.Title) > 255 {
+	if utf8.RuneCountInString(task.Title) > 255 {
 		return fmt.Errorf("title too long, maximum 255 characters")
 	}
-	if len(task.Description) > 1000 {
+	if utf8.RuneCountInString(task.Description) > 1000 {
 		return fmt.Errorf("description too long, maximum 1000 characters")
 	}
 	return nil
