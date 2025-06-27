@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	_ "github.com/Util787/task-manager/docs"
 	"github.com/Util787/task-manager/internal/adapters/http-adapter/handlers/middleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -17,9 +18,10 @@ func (h *Handlers) InitRoutes(env string) *gin.Engine {
 		router.Use(gin.Logger())
 	}
 
-	router.Use(middleware.LoggingMiddleware(h.log))
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	router.Use(gin.Recovery())
+	router.Use(middleware.LoggingMiddleware(h.log))
 	api := router.Group("/api")
 	{
 		v1 := api.Group("/v1")
