@@ -6,6 +6,7 @@ import (
 
 	http_server "github.com/Util787/task-manager/pkg/http-server"
 	"github.com/caarlos0/env/v11"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -14,6 +15,10 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
+	if err := godotenv.Load(); err != nil {
+		return nil, fmt.Errorf("failed to load .env file: %w", err)
+	}
+
 	cfg := &Config{}
 
 	if err := env.Parse(cfg); err != nil {
