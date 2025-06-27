@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"log/slog"
+	"time"
 
 	"github.com/Util787/task-manager/internal/domain"
 	"github.com/google/uuid"
@@ -14,7 +15,7 @@ type Handlers struct {
 
 type TaskUsecase interface {
 	CreateTask(task *domain.Task) (uuid.UUID, error)
-	GetTaskStateByID(id uuid.UUID) (domain.TaskState, error)
+	GetTaskStateByID(id uuid.UUID) (domain.TaskState, time.Time, error)
 	GetTaskResultByID(id uuid.UUID) (string, error)
 	DeleteTask(id uuid.UUID) error
 }

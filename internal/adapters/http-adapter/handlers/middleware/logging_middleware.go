@@ -38,6 +38,6 @@ func getPackageAndHandlerName(fullName string) string {
 	fullName = strings.TrimSuffix(fullName, "-fm")
 	parts := strings.Split(fullName, "/")
 	lastPart := parts[len(parts)-1]
-	packageAndMethodStr := strings.ReplaceAll(lastPart, ".(*Handler)", "")
+	packageAndMethodStr := strings.ReplaceAll(lastPart, ".(*Handlers)", "")
 	return packageAndMethodStr
 }

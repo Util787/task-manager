@@ -4,11 +4,17 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/Util787/task-manager/internal/domain"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+type GetTaskStateResponse struct {
+	State     domain.TaskState `json:"state"`
+	CreatedAt time.Time        `json:"created_at"`
+}
 
 func (h *Handlers) getTaskStateByID(c *gin.Context) {
 	op, _ := c.Get("op")
@@ -24,7 +30,7 @@ func (h *Handlers) getTaskStateByID(c *gin.Context) {
 		return
 	}
 
-	state, err := h.taskUsecase.GetTaskStateByID(uuid)
+	state, createdAt, err := h.taskUsecase.GetTaskStateByID(uuid)
 	if err != nil {
 		if errors.Is(err, domain.ErrTaskNotFound) {
 			newErrorResponse(c, log, http.StatusNotFound, "task not found", err)
@@ -34,5 +40,8 @@ func (h *Handlers) getTaskStateByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, state)
+	c.JSON(http.StatusOK, GetTaskStateResponse{
+		State:     state,
+		CreatedAt: createdAt,
+	})
 }

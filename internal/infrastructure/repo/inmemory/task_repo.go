@@ -34,17 +34,17 @@ func (r *TaskRepository) CreateTask(task *domain.Task) uuid.UUID {
 	return id
 }
 
-func (r *TaskRepository) GetTaskStateByID(id uuid.UUID) (domain.TaskState, error) {
+func (r *TaskRepository) GetTaskStateByID(id uuid.UUID) (domain.TaskState, time.Time, error) {
 	const op = "TaskRepository.GetTaskStateByID"
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
 	task, exists := r.tasks[id]
 	if !exists {
-		return domain.TaskState{}, fmt.Errorf("%s: %w", op, domain.ErrTaskNotFound)
+		return domain.TaskState{}, time.Time{}, fmt.Errorf("%s: %w", op, domain.ErrTaskNotFound)
 	}
 
-	return task.TaskState, nil
+	return task.TaskState, task.CreatedAt, nil
 }
 
 func (r *TaskRepository) GetTaskResultByID(id uuid.UUID) (string, error) {

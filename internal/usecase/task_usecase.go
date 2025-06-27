@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Util787/task-manager/internal/domain"
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ type TaskUsecase struct {
 
 type TaskRepository interface {
 	CreateTask(task *domain.Task) uuid.UUID
-	GetTaskStateByID(id uuid.UUID) (domain.TaskState, error)
+	GetTaskStateByID(id uuid.UUID) (domain.TaskState, time.Time, error)
 	GetTaskResultByID(id uuid.UUID) (string, error)
 	DeleteTask(id uuid.UUID) error
 }
@@ -46,14 +47,14 @@ func (t *TaskUsecase) validateTask(task *domain.Task) error {
 	return nil
 }
 
-func (t *TaskUsecase) GetTaskStateByID(id uuid.UUID) (domain.TaskState, error) {
+func (t *TaskUsecase) GetTaskStateByID(id uuid.UUID) (domain.TaskState, time.Time, error) {
 	const op = "TaskUsecase.GetTaskStateByID"
 
-	state, err := t.taskRepo.GetTaskStateByID(id)
+	state, createdAt, err := t.taskRepo.GetTaskStateByID(id)
 	if err != nil {
-		return domain.TaskState{}, fmt.Errorf("%s: %w", op, err)
+		return domain.TaskState{}, time.Time{}, fmt.Errorf("%s: %w", op, err)
 	}
-	return state, nil
+	return state, createdAt, nil
 }
 
 func (t *TaskUsecase) GetTaskResultByID(id uuid.UUID) (string, error) {
