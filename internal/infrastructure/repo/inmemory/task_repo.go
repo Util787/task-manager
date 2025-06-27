@@ -21,7 +21,7 @@ func NewTaskRepository(log *slog.Logger) *TaskRepository {
 	}
 }
 
-func (r *TaskRepository) CreateTask(task *domain.Task) {
+func (r *TaskRepository) CreateTask(task *domain.Task) uuid.UUID {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
@@ -29,19 +29,22 @@ func (r *TaskRepository) CreateTask(task *domain.Task) {
 	task.CreatedAt = now
 	task.UpdatedAt = now
 
-	r.tasks[uuid.New()] = task
+	id := uuid.New()
+	r.tasks[id] = task
+	return id
 }
 
-func (r *TaskRepository) GetTaskStateByID(id uuid.UUID) (domain.TaskStatus, time.Duration, error) {
+func (r *TaskRepository) GetTaskStateByID(id uuid.UUID) (domain.TaskState, error) {
 	const op = "TaskRepository.GetTaskStateByID"
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
 	task, exists := r.tasks[id]
 	if !exists {
-		return "", 0, fmt.Errorf("%s: %w", op, domain.ErrTaskNotFound)
+		return domain.TaskState{}, fmt.Errorf("%s: %w", op, domain.ErrTaskNotFound)
 	}
-	return task.Status, task.WorkDuration, nil
+
+	return task.TaskState, nil
 }
 
 func (r *TaskRepository) GetTaskResultByID(id uuid.UUID) (string, error) {
@@ -53,6 +56,7 @@ func (r *TaskRepository) GetTaskResultByID(id uuid.UUID) (string, error) {
 	if !exists {
 		return "", fmt.Errorf("%s: %w", op, domain.ErrTaskNotFound)
 	}
+
 	return task.Result, nil
 }
 
