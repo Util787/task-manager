@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"time"
+	"fmt"
 
 	"github.com/Util787/task-manager/internal/domain"
 	"github.com/google/uuid"
@@ -12,8 +12,8 @@ type TaskUsecase struct {
 }
 
 type TaskRepository interface {
-	CreateTask(task *domain.Task)
-	GetTaskStateByID(id uuid.UUID) (domain.TaskStatus, time.Duration, error)
+	CreateTask(task *domain.Task) uuid.UUID
+	GetTaskStateByID(id uuid.UUID) (domain.TaskState, error)
 	GetTaskResultByID(id uuid.UUID) (string, error)
 	DeleteTask(id uuid.UUID) error
 }
@@ -22,21 +22,56 @@ func NewTaskUsecase(taskRepo TaskRepository) *TaskUsecase {
 	return &TaskUsecase{taskRepo: taskRepo}
 }
 
-//TODO: add validation and logic
+func (t *TaskUsecase) CreateTask(task *domain.Task) (uuid.UUID, error) {
+	const op = "TaskUsecase.CreateTask"
 
-func (t *TaskUsecase) CreateTask(task *domain.Task) error {
-	t.taskRepo.CreateTask(task)
+	if err := t.validateTask(task); err != nil {
+		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	id := t.taskRepo.CreateTask(task)
+	return id, nil
+}
+
+func (t *TaskUsecase) validateTask(task *domain.Task) error {
+	if task.Title == "" {
+		return fmt.Errorf("title cannot be empty")
+	}
+	if len(task.Title) > 255 {
+		return fmt.Errorf("title too long, maximum 255 characters")
+	}
+	if len(task.Description) > 1000 {
+		return fmt.Errorf("description too long, maximum 1000 characters")
+	}
 	return nil
 }
 
-func (t *TaskUsecase) GetTaskStateByID(id uuid.UUID) (domain.TaskStatus, time.Duration, error) {
-	return t.taskRepo.GetTaskStateByID(id)
+func (t *TaskUsecase) GetTaskStateByID(id uuid.UUID) (domain.TaskState, error) {
+	const op = "TaskUsecase.GetTaskStateByID"
+
+	state, err := t.taskRepo.GetTaskStateByID(id)
+	if err != nil {
+		return domain.TaskState{}, fmt.Errorf("%s: %w", op, err)
+	}
+	return state, nil
 }
 
 func (t *TaskUsecase) GetTaskResultByID(id uuid.UUID) (string, error) {
-	return t.taskRepo.GetTaskResultByID(id)
+	const op = "TaskUsecase.GetTaskResultByID"
+
+	result, err := t.taskRepo.GetTaskResultByID(id)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+	return result, nil
 }
 
 func (t *TaskUsecase) DeleteTask(id uuid.UUID) error {
-	return t.taskRepo.DeleteTask(id)
+	const op = "TaskUsecase.DeleteTask"
+
+	err := t.taskRepo.DeleteTask(id)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	return nil
 }
