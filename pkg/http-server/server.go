@@ -31,3 +31,13 @@ func (s *Server) Run() error {
 func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
 }
+
+// use for debug only
+func (s *Server) GetInfo() map[string]string {
+	return map[string]string{
+		"addr":                s.httpServer.Addr,
+		"read_timeout":        s.httpServer.ReadTimeout.String(),
+		"write_timeout":       s.httpServer.WriteTimeout.String(),
+		"read_header_timeout": s.httpServer.ReadHeaderTimeout.String(),
+	}
+}
