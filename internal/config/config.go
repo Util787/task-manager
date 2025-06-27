@@ -25,6 +25,10 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("failed to parse config: %w", err)
 	}
 
+	if cfg.Env != "prod" && cfg.Env != "dev" && cfg.Env != "local" {
+		return nil, fmt.Errorf("invalid environment: %s, must be prod, dev or local", cfg.Env)
+	}
+
 	slog.Info("Configuration loaded successfully", // for debug, delete later
 		"env", cfg.Env,
 		"http_port", cfg.HttpServer.Port,
