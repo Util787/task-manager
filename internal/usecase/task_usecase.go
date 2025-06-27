@@ -31,6 +31,12 @@ func (t *TaskUsecase) CreateTask(task *domain.Task) (uuid.UUID, error) {
 		return uuid.Nil, fmt.Errorf("%s: %w", op, err)
 	}
 
+	// Initializing task state, in fact the logic would be much more complicated, but I made like this for simplicity
+	task.TaskState = domain.TaskState{
+		Status:       domain.StatusInProgress,
+		WorkDuration: 0, 
+	}
+
 	id := t.taskRepo.CreateTask(task)
 	return id, nil
 }
