@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type GetTaskStateResponse struct {
+type getTaskStateResponse struct {
 	State     domain.TaskState `json:"state"`
 	CreatedAt time.Time        `json:"created_at" example:"2025-06-28T01:31:19.1864825+03:00"`
 }
@@ -23,7 +23,7 @@ type GetTaskStateResponse struct {
 // @Accept json
 // @Produce json
 // @Param id path string true "Task ID" format(uuid)
-// @Success 200 {object} GetTaskStateResponse "task state: {state}, created at: {created_at}"
+// @Success 200 {object} getTaskStateResponse "task state: {state}, created at: {created_at}"
 // @Failure 400 {object} errorResponse "invalid task ID"
 // @Failure 404 {object} errorResponse "task not found"
 // @Failure 500 {object} errorResponse "failed to get task state"
@@ -52,7 +52,7 @@ func (h *Handlers) getTaskStateByID(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, GetTaskStateResponse{
+	c.JSON(http.StatusOK, getTaskStateResponse{
 		State:     state,
 		CreatedAt: createdAt,
 	})

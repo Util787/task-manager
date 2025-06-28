@@ -190,7 +190,7 @@ const docTemplate = `{
                     "200": {
                         "description": "task state: {state}, created at: {created_at}",
                         "schema": {
-                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.GetTaskStateResponse"
+                            "$ref": "#/definitions/internal_adapters_http-adapter_handlers.getTaskStateResponse"
                         }
                     },
                     "400": {
@@ -245,18 +245,6 @@ const docTemplate = `{
                 "StatusCompleted"
             ]
         },
-        "internal_adapters_http-adapter_handlers.GetTaskStateResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string",
-                    "example": "2025-06-28T01:31:19.1864825+03:00"
-                },
-                "state": {
-                    "$ref": "#/definitions/github_com_Util787_task-manager_internal_domain.TaskState"
-                }
-            }
-        },
         "internal_adapters_http-adapter_handlers.createTaskRequest": {
             "type": "object",
             "required": [
@@ -303,6 +291,18 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "task result: completed"
+                }
+            }
+        },
+        "internal_adapters_http-adapter_handlers.getTaskStateResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-06-28T01:31:19.1864825+03:00"
+                },
+                "state": {
+                    "$ref": "#/definitions/github_com_Util787_task-manager_internal_domain.TaskState"
                 }
             }
         },

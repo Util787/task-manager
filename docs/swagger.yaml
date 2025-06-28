@@ -19,14 +19,6 @@ definitions:
     - StatusFailed
     - StatusInProgress
     - StatusCompleted
-  internal_adapters_http-adapter_handlers.GetTaskStateResponse:
-    properties:
-      created_at:
-        example: "2025-06-28T01:31:19.1864825+03:00"
-        type: string
-      state:
-        $ref: '#/definitions/github_com_Util787_task-manager_internal_domain.TaskState'
-    type: object
   internal_adapters_http-adapter_handlers.createTaskRequest:
     properties:
       description:
@@ -58,6 +50,14 @@ definitions:
       message:
         example: 'task result: completed'
         type: string
+    type: object
+  internal_adapters_http-adapter_handlers.getTaskStateResponse:
+    properties:
+      created_at:
+        example: "2025-06-28T01:31:19.1864825+03:00"
+        type: string
+      state:
+        $ref: '#/definitions/github_com_Util787_task-manager_internal_domain.TaskState'
     type: object
   time.Duration:
     enum:
@@ -203,7 +203,7 @@ paths:
         "200":
           description: 'task state: {state}, created at: {created_at}'
           schema:
-            $ref: '#/definitions/internal_adapters_http-adapter_handlers.GetTaskStateResponse'
+            $ref: '#/definitions/internal_adapters_http-adapter_handlers.getTaskStateResponse'
         "400":
           description: invalid task ID
           schema:
