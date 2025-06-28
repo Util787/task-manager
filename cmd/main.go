@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -28,7 +29,7 @@ const (
 func main() {
 	config, err := config.Load()
 	if err != nil {
-		panic("Failed to load config" + err.Error())
+		fmt.Println("Failed to load config: " + err.Error())
 	}
 
 	log := setupLogger(config.Env)

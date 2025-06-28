@@ -14,14 +14,12 @@ type Config struct {
 }
 
 func Load() (*Config, error) {
-	if err := godotenv.Load(); err != nil {
-		return nil, fmt.Errorf("failed to load .env file: %w", err)
-	}
+	_ = godotenv.Load()
 
 	cfg := &Config{}
 
 	if err := env.Parse(cfg); err != nil {
-		return nil, fmt.Errorf("failed to parse config: %w", err)
+		return nil, fmt.Errorf("failed to parse config with err: %w, using default values", err)
 	}
 
 	if cfg.Env != "prod" && cfg.Env != "dev" && cfg.Env != "local" {
