@@ -19,7 +19,7 @@ func Load() (*Config, error) {
 	cfg := &Config{}
 
 	if err := env.Parse(cfg); err != nil {
-		return nil, fmt.Errorf("failed to parse config with err: %w, using default values", err)
+		return nil, fmt.Errorf("failed to parse config with err: %w", err)
 	}
 
 	if cfg.Env != "prod" && cfg.Env != "dev" && cfg.Env != "local" {
